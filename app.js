@@ -8,9 +8,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 const mongoose= require('mongoose');
-mongoose.connect(
-  'mongodb+srv://silpa-p:VGG8eWk2Gysyxs%40@cluster0.3z5vg.mongodb.net/?retryWrites=true&w=majority'
-);
+mongoose.connect('mongodb+srv://silpa-p:'+process.env.MONGO_PW+'@cluster0.3z5vg.mongodb.net/?retryWrites=true&w=majority');
 
 const bodyParser = require('body-parser');
 
