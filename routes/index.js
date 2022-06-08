@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 const mongoose = require('mongoose');
+mongoose.Types.ObjectId.isValid('all');
 const Article = require('../models/article');
 
 /* GET home page. */
@@ -10,6 +11,22 @@ router.get('/', function(req, res, next) {
     status: "success",
     message: "Home Page"
   });
+});
+
+/* GET all the articles */
+router.get('/api/article/all', function(req, res, next){
+  Article.find()
+    .exec()
+    .then(docs => {
+      console.log(docs);
+      res.status(200).json(docs);
+    })
+    .catch(err =>{
+      console.log(err);
+      res.status(500).json({
+        error: err
+      });
+    });
 });
 
 /* GET a particular article page. */
@@ -32,22 +49,6 @@ router.get('/api/article/:id', function(req, res, next){
     });
 });
 
-/* GET all the articles */
-router.get('/api/article/', function(req, res, next){
-  Article.find()
-    .exec()
-    .then(docs => {
-      console.log(docs);
-      res.status(200).json(docs);
-    })
-    .catch(err =>{
-      console.log(err);
-      res.status(500).json({
-        error: err
-      });
-    });
-});
-
 /* GET trending section. */
 router.get('/api/article/trending', function(req, res, next){
   res.json({
@@ -57,7 +58,7 @@ router.get('/api/article/trending', function(req, res, next){
 });
 
 /* POST request: CREATE article */
-router.post('/api/article', function(req, res, next){
+router.post('/api/article/', function(req, res, next){
 
   const articleNew = new Article({
     //_id: new mongoose.Types.ObjectId(),
@@ -80,3 +81,38 @@ router.post('/api/article', function(req, res, next){
     });
 });
 module.exports = router;
+
+/* PUT request : Update an article */
+
+router.put("/api/article/:id", (req, res, next) =>{
+  const id = req.params['id'];
+  const updateOps = {};
+  /*for ( const ops of req.body){
+    updateOps[ops.propName] = ops.value;
+  }*/
+  Article.updateMany({ _id: id})
+  .exec()
+  .then(result => {
+    res.status(200).json(result);
+  })
+  .catch(err =>{
+    console.log(err);
+    res.status(500).json({
+      error: err
+    });
+  });
+})
+/* DELETE : Removing a particular article */
+router.delete('/api/article/:id', function(req, res, next){
+  Article.remove()
+    .exec()
+    .then(result => {
+      res.status(200).json(result);
+    })
+    .catch(err =>{
+      console.log(err);
+      res.status(500).json({
+        error: err
+      });
+    });
+});
