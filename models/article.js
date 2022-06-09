@@ -8,6 +8,10 @@ const articleSchema = mongoose.Schema({
         type: Number,
         default: 0,
      },
+    like : {
+        type: Boolean,
+        default: false
+    }
 });
 
 module.exports = mongoose.model('Article', articleSchema);

@@ -18,7 +18,7 @@ router.get('/', function(req, res, next) {
 /* GET all the articles */
 router.get('/api/article/', function(req, res, next){
   Article.find()
-    .select('title content _id viewCount')
+    .select('title content _id')
     .exec()
     .then(docs => {
       const response = {
@@ -28,7 +28,6 @@ router.get('/api/article/', function(req, res, next){
             title: doc.title,
             content: doc.content,
             _id: doc._id,
-            viewCount: viewCount,
             request: {
               type: 'GET',
               url: "localhost:3000/article/api/"+ doc._id
@@ -152,5 +151,47 @@ router.delete('/api/article/:id', auth, function(req, res, next){
 });
 
 /* POST : Liking an article */
+router.post("/api/article/:id/like", (req, res, next) =>{
+
+  const id = req.params['id'];
+  Article.findById(id)
+  .select('like')
+  .exec()
+  .then(result => {
+    Article.like = true;
+    res.status(200).json({
+      message: 'article liked'
+    })
+  })
+  .catch(err =>{
+    console.log(err);
+    res.status(500).json({
+      error: err
+    });
+  });
+})
+
+/* DELETE : Unliking an article */
+router.delete("/api/article/:id/like", (req, res, next) =>{
+
+  const id = req.params['id'];
+  Article.findById(id)
+  .select('like')
+  .exec()
+  .then(result => {
+    if(Article.like){
+      Article.like = false;
+    }
+    res.status(200).json({
+      message: 'article unliked'
+    })
+  })
+  .catch(err =>{
+    console.log(err);
+    res.status(500).json({
+      error: err
+    });
+  });
+})
 
 module.exports = router;
