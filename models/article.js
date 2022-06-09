@@ -9,9 +9,10 @@ const articleSchema = mongoose.Schema({
         default: 0,
      },
     like : {
-        type: Boolean,
-        default: false
-    }
+        type: Number,
+        default: 0,
+    },
+    time : { type : Date, default: Date.now }
 });
 
 module.exports = mongoose.model('Article', articleSchema);

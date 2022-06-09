@@ -5,7 +5,8 @@ var bcrypt = require('bcrypt');
 
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-
+const process = require('process');
+require('dotenv').config();
 /* POST for signup */
 router.post('/signup/', (req, res, next) =>{
   User.find({ email : req.body.email})
@@ -13,7 +14,7 @@ router.post('/signup/', (req, res, next) =>{
       .then(user =>{
         if(user.length>=1){
           return res.status(422).json({
-            message: "email noy unique"
+            message: "email not unique"
           });
         }
         else{

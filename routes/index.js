@@ -25,8 +25,8 @@ router.get('/api/article/', function(req, res, next){
         count : docs.length,
         articles: docs.map(doc =>{
           return{
-            title: doc.title,
-            content: doc.content,
+            //title: doc.title,
+            //content: doc.content,
             _id: doc._id,
             request: {
               type: 'GET',
@@ -55,7 +55,7 @@ router.get('/api/article/:id', function(req, res, next){
       console.log(doc);
       if(doc){
         res.status(200).json(doc);
-        Article.updateOne({ _id: id}, { $addToSet: {viewCount: [ token ] } })
+        Article.findOneAndUpdate({ _id: id}, { $inc: {'viewCount': 1 } })
         .exec()
         .then(result => {
           res.status(200).json(result);
@@ -90,7 +90,7 @@ router.post('/api/article/', auth, function(req, res, next){
 
   const articleNew = new Article({
     title: req.body.title,
-    content: req.body.content
+    content: req.body.content,
   });
   //cloudinary.v2.uploader.upload("/home/my_image.jpg", function(error, result) {console.log(result, error)});
   articleNew
@@ -154,15 +154,17 @@ router.delete('/api/article/:id', auth, function(req, res, next){
 router.post("/api/article/:id/like", (req, res, next) =>{
 
   const id = req.params['id'];
-  Article.findById(id)
-  .select('like')
-  .exec()
-  .then(result => {
-    Article.like = true;
-    res.status(200).json({
-      message: 'article liked'
-    })
-  })
+  Article.findOneAndUpdate({ _id: id}, { $inc: {'like': 1 } })
+        .exec()
+        .then(result => {
+          res.status(200).json(result);
+        })
+        .catch(err =>{
+          console.log(err);
+          res.status(500).json({
+            error: err
+          });
+        })
   .catch(err =>{
     console.log(err);
     res.status(500).json({
@@ -175,17 +177,17 @@ router.post("/api/article/:id/like", (req, res, next) =>{
 router.delete("/api/article/:id/like", (req, res, next) =>{
 
   const id = req.params['id'];
-  Article.findById(id)
-  .select('like')
-  .exec()
-  .then(result => {
-    if(Article.like){
-      Article.like = false;
-    }
-    res.status(200).json({
-      message: 'article unliked'
-    })
-  })
+  Article.findOneAndUpdate({ _id: id}, { $inc: {'like': -1 } })
+        .exec()
+        .then(result => {
+          res.status(200).json(result);
+        })
+        .catch(err =>{
+          console.log(err);
+          res.status(500).json({
+            error: err
+          });
+        })
   .catch(err =>{
     console.log(err);
     res.status(500).json({
