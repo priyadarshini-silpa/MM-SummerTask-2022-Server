@@ -7,14 +7,6 @@ mongoose.Types.ObjectId.isValid('all');
 const Article = require('../models/article');
 const auth = require('../auth');
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.json({
-    status: "success",
-    message: "Home Page"
-  });
-});
-
 /* GET all the articles */
 router.get('/api/article/', function(req, res, next){
   Article.find()
@@ -78,11 +70,18 @@ router.get('/api/article/:id', function(req, res, next){
 });
 
 /* GET trending section. */
-router.get('/api/article/trending', function(req, res, next){
-  res.json({
-    status: "success",
-    message: "Trending articles"
-  });
+router.get('/api/article/trending', (req, res, next) => {
+  Article.find()
+    .sort({ views: -1 })
+    .exec()
+    .then((docs) => {
+      console.log("From Database", docs);
+      res.status(200).json(docs);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ error: err });
+    });
 });
 
 /* POST request: CREATE article */
@@ -102,8 +101,8 @@ router.post('/api/article/', auth, function(req, res, next){
       message: "article was uploaded.",
       createdArticle : {
         title: result.title,
-        content: doc.content,
-        _id: doc._id,
+        content: result.content,
+        _id: result._id,
         request: {
           type: 'GET',
           url: "localhost:3000/article/api/"+ result._id

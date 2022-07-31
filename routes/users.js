@@ -7,6 +7,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const process = require('process');
 require('dotenv').config();
+
 /* POST for signup */
 router.post('/signup/', (req, res, next) =>{
   User.find({ email : req.body.email})
