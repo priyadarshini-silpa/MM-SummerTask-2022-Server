@@ -6,6 +6,7 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "axios": "^0.27.2",
     "bcrypt": "^5.0.1",
     "cloudinary": "^1.30.0",
     "cookie-parser": "~1.4.4",
@@ -16,6 +17,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.3.5",
     "morgan": "~1.9.1",
+    "nodemon": "^2.0.19",
     "pug": "^3.0.2"
   }
 }
